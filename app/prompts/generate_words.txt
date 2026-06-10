@@ -1,0 +1,31 @@
+Task:
+Generate exactly {amount} pairs of words that are maximally unrelated and challenging to connect.
+
+Difficulty requirements:
+
+Pick words from very different domains (e.g., biology vs finance, mythology vs software, kitchen object vs astronomy).
+Avoid obvious pairings, synonyms, antonyms, category siblings, and common phrase pairings.
+Avoid words that are frequently connected in everyday language.
+Favor conceptual distance while keeping both words recognizable to educated general audiences.
+Each item may be a common noun, proper noun, historical figure, place, fictional character, brand, or major pop-culture reference.
+Do not use slurs or explicit sexual content.
+Quality constraints:
+
+word_one and word_two must be distinct.
+Use short labels (1–3 words each).
+No punctuation-heavy strings, hashtags, or emojis.
+Output format (strict):
+Return JSON only, with no markdown, no code fences, and no extra text. Return an array of exactly {amount} JSON objects:
+[
+  {
+    "word_one": "...",
+    "word_two": "..."
+  }
+]
+
+Self-check before finalizing:
+
+Did you output exactly {amount} pairs in a JSON array?
+Are the two items from clearly different domains?
+Is their connection non-obvious?
+Is the output valid JSON?

@@ -1,0 +1,129 @@
+Vertex Setup
+
+Here’s a clean guide you can give someone else to get this project running with Vertex AI.
+
+What They Need
+
+They need all of these:
+
+Python 3 installed
+gcloud CLI installed
+Access to the Google Cloud project you want to use
+Vertex AI API enabled on that project
+Local Google Application Default Credentials
+A local .env file with the project settings
+They do not need a GEMINI_API_KEY if using the current Vertex setup.
+
+1. Clone And Install
+
+git clone <your-repo-url>
+cd sotonhack26backend
+
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+2. Create The Env File
+
+Create .env in the project root:
+
+GOOGLE_GENAI_USE_VERTEXAI=true
+GOOGLE_CLOUD_PROJECT=sticking-game-490222
+GOOGLE_CLOUD_LOCATION=us-central1
+GEMINI_MODEL=gemini-2.5-flash
+
+DATABASE_URL=sqlite:///./wordgame.db
+POINTS_PER_CORRECT=10
+If you want them to use a different GCP project, replace sticking-game-490222.
+
+3. Install gcloud CLI
+
+If they don’t already have it:
+
+gcloud --version
+If that fails, install Google Cloud CLI:
+https://cloud.google.com/sdk/docs/install
+
+4. Log Into Google Cloud
+
+They need two logins.
+
+First, normal gcloud login:
+
+gcloud auth login
+Then set the project:
+
+gcloud config set project sticking-game-490222
+Then set up Application Default Credentials:
+
+gcloud auth application-default login
+This second command is the important one for the Python app.
+
+5. Make Sure They Have Project Access
+
+Their Google account must have permission to use Vertex AI in that project.
+
+At minimum, they need access to the Google Cloud project itself, and enough IAM permission to call Vertex AI models.
+
+If they don’t have access, they’ll get auth or permission errors even if login succeeded.
+
+6. Enable Vertex AI API
+
+Run:
+
+gcloud services enable aiplatform.googleapis.com --project=sticking-game-490222
+If the API is already enabled, this is harmless.
+
+7. Verify The Credentials Work
+
+Run:
+
+python3 test_gemini.py
+Expected result:
+
+It should print a Gemini response like True
+If they get:
+
+GOOGLE_CLOUD_PROJECT is not set in .env
+then .env is wrong or missing
+DefaultCredentialsError
+then they still need gcloud auth application-default login
+PERMISSION_DENIED
+then their Google account/project permissions are wrong
+model not found/access denied
+then the project may not have access to that model
+8. Run The App
+
+uvicorn app.main:app --reload
+Then open:
+
+http://127.0.0.1:8000/docs
+How Auth Works
+
+This project currently uses Vertex AI auth, not API key auth.
+
+That means the app uses:
+
+GOOGLE_CLOUD_PROJECT
+GOOGLE_CLOUD_LOCATION
+credentials from gcloud auth application-default login
+It does not rely on GEMINI_API_KEY when GOOGLE_GENAI_USE_VERTEXAI=true.
+
+Files That Matter
+
+.env.example
+test_gemini.py
+gemini_client.py
+config.py
+Common Fixes
+
+If test_gemini.py works but the app falls back to mock data:
+
+restart uvicorn
+check .env is in the repo root
+make sure the running shell is in the same project directory
+If the app says default credentials are missing:
+
+gcloud auth application-default login
+If you want, I can turn this into a polished README section you can commit into the repo.
+
+
